@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+if ! command -v bc &> /dev/null; then
+
+	tput sgr0
+
+	echo ""
+	echo -e '\E[1;36m' "\"bc\" is not installed. Please install it via your package manager."
+	echo ""
+
+	exit 1
+
+else
+
+	screen_resolution=$(xrandr | awk '/\*/ {print $1}')
+	horizontal_pixels=$(xrandr | awk '/\*/ {print $1}' | awk -F 'x' '{print $1}')
+	vertical_pixels=$(xrandr | awk '/\*/ {print $1}' | awk -F 'x' '{print $2}')
+	screen_size=$(xrandr | awk '/ connected/{print sqrt( ($(NF-2)/10)^2 + ($NF/10)^2 )/2.54""}')
+	screen_dpi=$(echo "sqrt(""$horizontal_pixels""^2 + ""$vertical_pixels""^2) / ""$screen_size""" | bc)
+
+	tput sgr0
+
+	echo ""
+	echo -e '\E[1;36m' "Connected display's resolution: ""$screen_resolution"" pixels"
+	echo ""
+	echo -e '\E[1;36m' "Display's diagonal length area: ""$screen_size"" Inch"
+	echo ""
+	echo -e '\E[1;36m' "Advisable display DPI settings: ""$screen_dpi"" dpi"
+	echo ""
+	exit 0
+
+fi
